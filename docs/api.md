@@ -82,7 +82,7 @@ explicitly set.
 
 If `key` is an array, interpret all the elements as booleans.
 
-[.check(fn, \[global=true\])](#check)
+.check(fn, \[global=true\])
 ----------
 
 Check that certain conditions are met in the provided arguments.
