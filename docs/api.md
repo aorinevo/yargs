@@ -455,12 +455,6 @@ displaying the value in the usage instructions:
 .default('timeout', 60000, '(one-minute)')
 ```
 
-.demand(count, \[max\], \[msg\]) \[DEPRECATED\]]
---------------------
-
-`demand()` has been deprecated, please instead see [demandOption()](#demandOption) and
-[demandCommand()](#demandCommand).
-
 .demandOption(key, \[msg | boolean\])
 ------------------------------
 .demandOption(key, msg)
@@ -1169,43 +1163,6 @@ usage information and exit.
 The default behavior is to set the value of any key not followed by an
 option value to `true`.
 
-.reset() \[DEPRECATED\]
---------
-
-Reset the argument object built up so far. This is useful for
-creating nested command line interfaces. Use [global](#global)
-to specify keys that should not be reset.
-
-```js
-var yargs = require('yargs')
-  .usage('$0 command')
-  .command('hello', 'hello command')
-  .command('world', 'world command')
-  .demandCommand(1, 'must provide a valid command'),
-  argv = yargs.argv,
-  command = argv._[0];
-
-if (command === 'hello') {
-  yargs.reset()
-    .usage('$0 hello')
-    .help('h')
-    .example('$0 hello', 'print the hello message!')
-    .argv
-
-  console.log('hello!');
-} else if (command === 'world'){
-  yargs.reset()
-    .usage('$0 world')
-    .help('h')
-    .example('$0 world', 'print the world message!')
-    .argv
-
-  console.log('world!');
-} else {
-  yargs.showHelp();
-}
-```
-
 .showCompletionScript()
 ----------------------
 
@@ -1326,7 +1283,7 @@ Options:
 If you explicitly specify a `locale()`, you should do so *before* calling
 `updateStrings()`.
 
-[.usage(\<message|command\>, \[desc\], \[builder\], \[handler\])](#usage)
+.usage(\<message|command\>, \[desc\], \[builder\], \[handler\])
 ---------------------
 
 Set a usage message to show which commands to use. Inside `message`, the string
@@ -1347,7 +1304,6 @@ const argv = require('yargs')
     })
   }).argv
 ```
-
 
 .version()
 ----------------------------------------
@@ -1372,3 +1328,49 @@ Format usage output to wrap at `columns` many columns.
 By default wrap will be set to `Math.min(80, windowWidth)`. Use `.wrap(null)` to
 specify no column limit (no right-align). Use `.wrap(yargs.terminalWidth())` to
 maximize the width of yargs' usage instructions.
+
+Deprecated API
+==============
+
+.demand(count, \[max\], \[msg\]) \[DEPRECATED\]]
+--------------------
+
+`demand()` has been deprecated, please instead see [demandOption()](#demandOption) and
+[demandCommand()](#demandCommand).
+
+.reset() \[DEPRECATED\]
+--------
+
+Reset the argument object built up so far. This is useful for
+creating nested command line interfaces. Use [global](#global)
+to specify keys that should not be reset.
+
+```js
+var yargs = require('yargs')
+  .usage('$0 command')
+  .command('hello', 'hello command')
+  .command('world', 'world command')
+  .demandCommand(1, 'must provide a valid command'),
+  argv = yargs.argv,
+  command = argv._[0];
+
+if (command === 'hello') {
+  yargs.reset()
+    .usage('$0 hello')
+    .help('h')
+    .example('$0 hello', 'print the hello message!')
+    .argv
+
+  console.log('hello!');
+} else if (command === 'world'){
+  yargs.reset()
+    .usage('$0 world')
+    .help('h')
+    .example('$0 world', 'print the world message!')
+    .argv
+
+  console.log('world!');
+} else {
+  yargs.showHelp();
+}
+```
