@@ -28,7 +28,7 @@ require('yargs').parse()
 
 The rest of these methods below come in just before the terminating `.argv`.
 
-[.alias(key, alias)](#alias)
+.alias(key, alias)
 ------------------
 
 Set key names as equivalent such that updates to a key will propagate to aliases
@@ -53,7 +53,7 @@ If `yargs` is executed in an environment that embeds node and there's no script 
 expects it to be the script name. In order to override this behavior, use `.parse(process.argv.slice(1))`
 instead of `.argv` and the first parameter won't be ignored.
 
-[.array(key)](#array)
+.array(key)
 ----------
 
 Tell the parser to interpret `key` as an array. If `.array('foo')` is set,
@@ -71,7 +71,7 @@ For example: `--foo foo bar -- val` will be parsed as
 }
 ```
 
-[.boolean(key)](#boolean)
+.boolean(key)
 -------------
 
 Interpret `key` as a boolean. If a non-flag option follows `key` in
@@ -95,7 +95,7 @@ exit.
 `global` indicates whether `check()` should be enabled both
 at the top-level and for each sub-command.
 
-[.choices(key, choices)](choices)
+.choices(key, choices)
 ----------------------
 
 Limit valid values for `key` to a predefined set of `choices`, given as an array
@@ -129,7 +129,7 @@ var argv = require('yargs')
   .argv
 ```
 
-[.coerce(key, fn)](#coerce)
+.coerce(key, fn)
 ----------------
 
 Provide a synchronous function to coerce or transform the value(s) given on the
@@ -268,7 +268,7 @@ yargs
 Please see [Advanced Topics: Commands](https://github.com/yargs/yargs/blob/master/docs/advanced.md#commands) for a thorough
 discussion of the advanced features exposed in the Command API.
 
-[.completion(\[cmd\], \[description\], \[fn\])](#completion)
+.completion(\[cmd\], \[description\], \[fn\])
 ---------------------------------------
 
 Enable bash-completion shortcuts for commands and options.
@@ -330,7 +330,7 @@ var argv = require('yargs')
   .argv;
 ```
 
-[.config(\[key\], \[description\], \[parseFn\])](#config)
+.config(\[key\], \[description\], \[parseFn\])
 -------------------------------------------------------------
 .config(object)
 ---------------
@@ -412,7 +412,7 @@ yargs.pkgConf('nyc')
 
 Where `nyc-babel-config` is a package that exports configuration in its index.
 
-[.conflicts(x, y)](#conflicts)
+.conflicts(x, y)
 ----------------------------------------------
 
 Given the key `x` is set, the key `y` must not be set. `y` can either be a single
@@ -420,15 +420,15 @@ string or an array of argument names that `x` conflicts with.
 
 Optionally `.conflicts()` can accept an object specifying multiple conflicting keys.
 
-[.count(key)](#count)
+.count(key)
 ------------
 
 Interpret `key` as a boolean flag, but set its parsed value to the number of
 flag occurrences rather than `true` or `false`. Default value is thus `0`.
 
-[.default(key, value, \[description\])](#default)
+.default(key, value, \[description\])
 ---------------------------------------------------------
-[.defaults(key, value, \[description\])](#defaults)
+.defaults(key, value, \[description\])
 ------------------------------------
 
 **Note:** The `.defaults()` alias is deprecated. It will be
@@ -455,13 +455,13 @@ displaying the value in the usage instructions:
 .default('timeout', 60000, '(one-minute)')
 ```
 
-[.demand(count, \[max\], \[msg\]) \[DEPRECATED\]](#demand)
+.demand(count, \[max\], \[msg\]) \[DEPRECATED\]]
 --------------------
 
 `demand()` has been deprecated, please instead see [demandOption()](#demandOption) and
 [demandCommand()](#demandCommand).
 
-[.demandOption(key, \[msg | boolean\])](#demandOption)
+.demandOption(key, \[msg | boolean\])
 ------------------------------
 .demandOption(key, msg)
 ------------------------------
@@ -540,7 +540,7 @@ Options:
 Missing required arguments: run, path
 ```
 
-[.demandCommand(\[min=1\], \[minMsg\])](#demandCommand)
+.demandCommand(\[min=1\], \[minMsg\])
 ------------------------------
 .demandCommand(\[min=1\], \[max\], \[minMsg\], \[maxMsg\])
 ------------------------------
@@ -579,24 +579,24 @@ _Note: in `minMsg` and `maxMsg`, every occurrence of `$0` will be replaced
 with the observed value, and every instance of `$1` will be replaced with the
 expected value._
 
-[.describe(key, desc)](#describe)
+.describe(key, desc)
 --------------------
 
 Describe a `key` for the generated usage information.
 
 Optionally `.describe()` can take an object that maps keys to descriptions.
 
-[.hide(key)](#hide)
+.hide(key)
 --------------------
 
 Hides a `key` from the generated usage information. Unless a `--show-hidden` option is also passed with `--help` (see [`showHidden()`](#showHidden)).
 
-[.detectLocale(boolean)](#detect-locale)
+.detectLocale(boolean)
 -----------
 
 Should yargs attempt to detect the os' locale? Defaults to `true`.
 
-[.env(\[prefix\])](#env)
+.env(\[prefix\])
 --------------
 
 Tell yargs to parse environment variables matching the given prefix and apply
@@ -656,9 +656,9 @@ $ MY_PROGRAM_FRUIT_THING=banana node fruity.js -f cat
 Env var parsing is disabled by default, but you can also explicitly disable it
 by calling `.env(false)`, e.g. if you need to undo previous configuration.
 
-[.epilog(str)](#epilog)
+.epilog(str)
 ------------
-[.epilogue(str)](#epilogue)
+.epilogue(str)
 --------------
 
 A message to print at the end of the usage instructions, e.g.
@@ -668,7 +668,7 @@ var argv = require('yargs')
   .epilogue('for more information, find our manual at http://example.com');
 ```
 
-[.example(cmd, desc)](#example)
+.example(cmd, desc)
 -------------------
 
 Give some example invocations of your program. Inside `cmd`, the string
@@ -676,7 +676,7 @@ Give some example invocations of your program. Inside `cmd`, the string
 present script similar to how `$0` works in bash or perl.
 Examples will be printed out as part of the help message.
 
-[.exitProcess(enable)](#exit-process)
+.exitProcess(enable)
 ----------------------------------
 
 By default, yargs exits the process when the user passes a help flag, the user
@@ -684,7 +684,7 @@ uses the `.version` functionality, validation fails, or the command handler
 fails. Calling `.exitProcess(false)` disables this behavior, enabling further
 actions after yargs have been validated.
 
-[.fail(fn)](#fail)
+.fail(fn)
 ---------
 
 Method to execute when a failure occurs, rather than printing the failure message.
@@ -705,7 +705,7 @@ var argv = require('yargs')
   .argv
 ```
 
-[.getCompletion(args, done)](#get-completion)
+.getCompletion(args, done)
 ---------------------------
 
 Allows to programmatically get completion choices for any line.
@@ -728,7 +728,7 @@ require('yargs')
 
 Outputs the same completion choices as `./test.js --foo`<kbd>TAB</kbd>: `--foobar` and `--foobaz`
 
-[.global(globals, \[global=true\])](#global)
+.global(globals, \[global=true\])
 ------------
 
 Indicate that an option (or group of options) should not be reset when a command
@@ -761,7 +761,7 @@ option will have been eliminated.
 
 Options default to being global.
 
-[.group(key(s), groupName)](#group)
+.group(key(s), groupName)
 --------------------
 
 Given a key, or an array of keys, places options under an alternative heading
@@ -782,7 +782,7 @@ var yargs = require('yargs')(['--help'])
     Options:
       --help  Show help  [boolean]
 
-[.help()](#help)
+.help()
 -----------------------------------------
 .help([option | boolean])
 -----------------------------------------
@@ -813,7 +813,7 @@ var yargs = require("yargs")(['--info'])
   .argv
 ```
 
-[.showHidden()](#show-hidden)
+.showHidden()
 -----------------------------------------
 .showHidden([option | boolean])
 -----------------------------------------
@@ -836,7 +836,7 @@ var yargs = require("yargs")(['--help'])
   .argv
 ```
 
-[.implies(x, y)](#implies)
+.implies(x, y)
 --------------
 
 Given the key `x` is set, it is required that the key `y` is set. `y` can either
@@ -845,7 +845,7 @@ position of an argument or an array of multiple implications to associate with `
 
 Optionally `.implies()` can accept an object specifying multiple implications.
 
-[.locale()](#locale)
+.locale()
 ---------
 
 Return the locale that yargs is currently using.
@@ -856,7 +856,7 @@ yargs-generated help content will display in the user's language.
 To override this behavior with a static locale, pass the desired locale as a
 string to this method (see below).
 
-[.locale(locale)](#locale-locale)
+.locale(locale)
 ---------------
 
 Override the auto-detected locale from the user's operating system with a static
@@ -926,7 +926,7 @@ To submit a new translation for yargs:
 
 *The [Microsoft Terminology Search](http://www.microsoft.com/Language/en-US/Search.aspx) can be useful for finding the correct terminology in your locale.*
 
-[.nargs(key, count)](#nargs)
+.nargs(key, count)
 -----------
 
 The number of arguments that should be consumed after a key. This can be a
@@ -944,12 +944,12 @@ parses as:
 
 Optionally `.nargs()` can take an object of `key`/`narg` pairs.
 
-[.normalize(key)](#normalize)
+.normalize(key)
 ---------------
 
 The key provided represents a path and should have `path.normalize()` applied.
 
-[.number(key)](#number)
+.number(key)
 ------------
 
 Tell the parser to always interpret `key` as a number.
@@ -971,7 +971,7 @@ var argv = require('yargs')
   .argv
 ```
 
-[.option(key, \[opt\])](#option)
+.option(key, \[opt\])
 -----------------
 .options(key, \[opt\])
 ------------------
@@ -1057,7 +1057,7 @@ Valid `opt` keys include:
     - `'number'`: synonymous for `number: true`, see [`number()`](#number)
     - `'string'`: synonymous for `string: true`, see [`string()`](#string)
 
-[.parse(\[args\], \[context\], \[parseCallback\])](#parse)
+.parse(\[args\], \[context\], \[parseCallback\])
 ------------
 
 Parse `args` instead of `process.argv`. Returns the `argv` object.
@@ -1100,7 +1100,7 @@ parser.parse(bot.userText, function (err, argv, output) {
 
 
 
-[.pkgConf(key, \[cwd\])](#pkg-conf)
+.pkgConf(key, \[cwd\])
 ------------
 
 Similar to [`config()`](#config), indicates that yargs should interpret the object from the specified key in package.json
@@ -1146,20 +1146,20 @@ Valid `opt` keys include:
       - `'number'`: synonymous for `number: true`, see [`number()`](#number)
       - `'string'`: synonymous for `string: true`, see [`string()`](#string)
 
-[.recommendCommands()](#recommend-commands)
+.recommendCommands()
 ---------------------------
 
 Should yargs provide suggestions regarding similar commands if no matching
 command is found?
 
-[.require(key, \[msg | boolean\])](#require)
+.require(key, \[msg | boolean\])
 ------------------------------
-[.required(key, \[msg | boolean\])](#required)
+.required(key, \[msg | boolean\])
 ------------------------------
 
 An alias for [`demand()`](#demand). See docs there.
 
-[.requiresArg(key)](#requires-arg)
+.requiresArg(key)
 -----------------
 
 Specifies either a single option key (string), or an array of options that
@@ -1169,7 +1169,7 @@ usage information and exit.
 The default behavior is to set the value of any key not followed by an
 option value to `true`.
 
-[.reset() \[DEPRECATED\]](#reset)
+.reset() \[DEPRECATED\]
 --------
 
 Reset the argument object built up so far. This is useful for
@@ -1206,14 +1206,14 @@ if (command === 'hello') {
 }
 ```
 
-[.showCompletionScript()](#show-completion-script)
+.showCompletionScript()
 ----------------------
 
 Generate a bash completion script. Users of your application can install this
 script in their `.bashrc`, and yargs will provide completion shortcuts for
 commands and options.
 
-[.showHelp(consoleLevel='error')](#show-help)
+.showHelp(consoleLevel='error')
 ---------------------------
 
 Print the usage data using the [`console`](https://nodejs.org/api/console.html) function `consoleLevel` for printing.
@@ -1234,7 +1234,7 @@ yargs.showHelp("log"); //prints to stdout using console.log()
 
 Later on, `argv` can be retrieved with `yargs.argv`.
 
-[.showHelpOnFail(enable, \[message\])](#show-help-on-fail)
+.showHelpOnFail(enable, \[message\])
 ----------------------------------
 
 By default, yargs outputs a usage string if any error is detected. Use the
@@ -1268,13 +1268,13 @@ Missing argument value: f
 Specify --help for available options
 ```
 
-[.skipValidation(key)](#skip-validation)
+.skipValidation(key)
 -----------------
 
 Specifies either a single option key (string), or an array of options.
 If any of the options is present, yargs validation is skipped.
 
-[.strict(\[enabled=true\])](#strict)
+.strict(\[enabled=true\])
 ---------
 
 Any command-line argument given that is not demanded, or does not have a
@@ -1282,7 +1282,7 @@ corresponding description, will be reported as an error.
 
 Unrecognized commands will also be reported as errors.
 
-[.string(key)](#string)
+.string(key)
 ------------
 
 Tell the parser logic not to interpret `key` as a number or boolean.
@@ -1293,9 +1293,9 @@ If `key` is an array, interpret all the elements as strings.
 `.string('_')` will result in non-hyphenated arguments being interpreted as strings,
 regardless of whether they resemble numbers.
 
-[.updateLocale(obj)](#update-locale)
+.updateLocale(obj)
 ------------------
-[.updateStrings(obj)](#update-strings)
+.updateStrings(obj)
 ------------------
 
 Override the default strings used by yargs with the key/value
@@ -1349,7 +1349,7 @@ const argv = require('yargs')
 ```
 
 
-[.version()](#version)
+.version()
 ----------------------------------------
 .version([version|boolean])
 ----------------------------------------
@@ -1364,7 +1364,7 @@ of your module and use its `version` value.
 
 If the boolean argument `false` is provided, it will disable `--version`.
 
-[.wrap(columns)](#wrap)
+.wrap(columns)
 --------------
 
 Format usage output to wrap at `columns` many columns.
