@@ -56,7 +56,7 @@ describe('yargs dsl tests', () => {
         .argv
       )
 
-    r.errors[1].should.match(/Implications failed/)
+    r.errors[2].should.match(/Implications failed/)
   })
 
   it('accepts an object for describes', () => {
@@ -195,7 +195,7 @@ describe('yargs dsl tests', () => {
           .argv
         )
 
-      r.errors[3].should.match(/pork chop sandwiches/)
+      r.errors[4].should.match(/pork chop sandwiches/)
     })
 
     it('calling with no arguments should default to displaying help', () => {
@@ -205,7 +205,7 @@ describe('yargs dsl tests', () => {
           .argv
         )
 
-      r.errors[1].should.match(/required argument/)
+      r.errors[2].should.match(/required argument/)
     })
   })
 
@@ -284,7 +284,6 @@ describe('yargs dsl tests', () => {
         defaultDescription: {},
         choices: {},
         coerce: {},
-        requiresArg: [],
         skipValidation: [],
         count: [],
         normalize: [],
@@ -292,6 +291,7 @@ describe('yargs dsl tests', () => {
         config: {},
         configObjects: [],
         envPrefix: 'YARGS', // preserved as global
+        hiddenOptions: [],
         demandedCommands: {},
         demandedOptions: {},
         local: [
@@ -374,7 +374,7 @@ describe('yargs dsl tests', () => {
           .argv
       })
 
-      r.errors[1].should.match(/Did you mean goat/)
+      r.errors[2].should.match(/Did you mean goat/)
     })
 
     it('does not recommend a similiar command if no similar command exists', () => {
@@ -397,7 +397,7 @@ describe('yargs dsl tests', () => {
           .argv
       })
 
-      r.errors[1].should.match(/Did you mean goat/)
+      r.errors[2].should.match(/Did you mean goat/)
     })
 
     // see: https://github.com/yargs/yargs/issues/822
@@ -442,8 +442,7 @@ describe('yargs dsl tests', () => {
         '',
         'Options:',
         '  --version  Show version number  [boolean]',
-        '  -h         Show help  [boolean]',
-        ''
+        '  -h         Show help  [boolean]'
       ])
     })
 
@@ -468,8 +467,7 @@ describe('yargs dsl tests', () => {
         '',
         'Options:',
         '  --version  Show version number  [boolean]',
-        '  -h         Show help  [boolean]',
-        ''
+        '  -h         Show help  [boolean]'
       ])
     })
 
@@ -1145,8 +1143,7 @@ describe('yargs dsl tests', () => {
           '',
           'Options:',
           '  --help     Show help  [boolean]',
-          '  --version  Show version number  [boolean]',
-          ''
+          '  --version  Show version number  [boolean]'
         ])
 
         output2.split('\n').should.deep.equal([
@@ -1156,8 +1153,7 @@ describe('yargs dsl tests', () => {
           '',
           'Options:',
           '  --help     Show help  [boolean]',
-          '  --version  Show version number  [boolean]',
-          ''
+          '  --version  Show version number  [boolean]'
         ])
       })
 
@@ -1201,8 +1197,7 @@ describe('yargs dsl tests', () => {
           '',
           'Options:',
           '  --help     Show help  [boolean]',
-          '  --version  Show version number  [boolean]',
-          ''
+          '  --version  Show version number  [boolean]'
         ])
       })
 
@@ -1246,7 +1241,7 @@ describe('yargs dsl tests', () => {
   describe('config', () => {
     it('allows a parsing function to be provided as a second argument', () => {
       const argv = yargs('--config ./test/fixtures/config.json')
-        .config('config', path => JSON.parse(fs.readFileSync(path)))
+        .config('config', cfgPath => JSON.parse(fs.readFileSync(cfgPath)))
         .global('config', false)
         .argv
 
@@ -1342,6 +1337,20 @@ describe('yargs dsl tests', () => {
 
         argv.a.should.equal(2)
         argv.extends.should.equal('batman')
+      })
+
+      it('allows files with .*rc extension to be extended', () => {
+        const argv = yargs()
+          .config({
+            extends: './test/fixtures/extends/.myrc',
+            a: 3
+          })
+          .argv
+
+        argv.a.should.equal(3)
+        argv.b.should.equal(22)
+        argv.c.should.equal(201)
+        argv.z.should.equal(15)
       })
     })
   })
@@ -1688,8 +1697,7 @@ describe('yargs dsl tests', () => {
       const expected = [
         'Options:',
         '  --help     Show help  [boolean]',
-        '  --version  Show version number  [boolean]',
-        ''
+        '  --version  Show version number  [boolean]'
       ]
       option.logs[0].split('\n').should.deep.equal(expected)
       command.logs[0].split('\n').should.deep.equal(expected)
@@ -1709,8 +1717,7 @@ describe('yargs dsl tests', () => {
       const expected = [
         'Options:',
         '  --version  Show version number  [boolean]',
-        '  --help     Show help  [boolean]',
-        ''
+        '  --help     Show help  [boolean]'
       ]
       option.logs[0].split('\n').should.deep.equal(expected)
       command.logs[0].split('\n').should.deep.equal(expected)
@@ -1735,8 +1742,7 @@ describe('yargs dsl tests', () => {
       const expected = [
         'Options:',
         '  --version  Show version number  [boolean]',
-        '  --info     Show help  [boolean]',
-        ''
+        '  --info     Show help  [boolean]'
       ]
       option.logs[0].split('\n').should.deep.equal(expected)
       command.logs[0].split('\n').should.deep.equal(expected)
@@ -1757,8 +1763,7 @@ describe('yargs dsl tests', () => {
       const expected = [
         'Options:',
         '  --version  Show version number  [boolean]',
-        '  --info     Display info  [boolean]',
-        ''
+        '  --info     Display info  [boolean]'
       ]
       option.logs[0].split('\n').should.deep.equal(expected)
       command.logs[0].split('\n').should.deep.equal(expected)
@@ -1778,8 +1783,7 @@ describe('yargs dsl tests', () => {
       const expected = [
         'Options:',
         '  --version  Show version number  [boolean]',
-        '  --info     Display info  [boolean]',
-        ''
+        '  --info     Display info  [boolean]'
       ]
       option.logs[0].split('\n').should.deep.equal(expected)
       command.logs[0].split('\n').should.deep.equal(expected)
@@ -1801,8 +1805,7 @@ describe('yargs dsl tests', () => {
       info.logs[0].split('\n').should.deep.equal([
         'Options:',
         '  --version           Show version number  [boolean]',
-        '  -h, --help, --info  Show help  [boolean]',
-        ''
+        '  -h, --help, --info  Show help  [boolean]'
       ])
       h.result.should.have.property('_').and.deep.equal(['h'])
     })

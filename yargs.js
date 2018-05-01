@@ -11,6 +11,7 @@ const Y18n = require('y18n')
 const objFilter = require('./lib/obj-filter')
 const setBlocking = require('set-blocking')
 const applyExtends = require('./lib/apply-extends')
+const middlewareFactory = require('./lib/middleware')
 const YError = require('./lib/yerror')
 
 exports = module.exports = Yargs
@@ -21,6 +22,7 @@ function Yargs (processArgs, cwd, parentRequire) {
   let command = null
   let completion = null
   let groups = {}
+  let globalMiddleware = []
   let output = ''
   let preservedGroups = {}
   let usage = null
@@ -30,6 +32,8 @@ function Yargs (processArgs, cwd, parentRequire) {
     directory: path.resolve(__dirname, './locales'),
     updateFiles: false
   })
+
+  self.middleware = middlewareFactory(globalMiddleware, self)
 
   if (!cwd) cwd = process.cwd()
 
@@ -121,8 +125,9 @@ function Yargs (processArgs, cwd, parentRequire) {
     groups = {}
 
     const arrayOptions = [
-      'array', 'boolean', 'string', 'requiresArg', 'skipValidation',
-      'count', 'normalize', 'number'
+      'array', 'boolean', 'string', 'skipValidation',
+      'count', 'normalize', 'number',
+      'hiddenOptions'
     ]
 
     const objectOptions = [
@@ -145,7 +150,7 @@ function Yargs (processArgs, cwd, parentRequire) {
     // instances of all our helpers -- otherwise just reset.
     usage = usage ? usage.reset(localLookup) : Usage(self, y18n)
     validation = validation ? validation.reset(localLookup) : Validation(self, usage, y18n)
-    command = command ? command.reset() : Command(self, usage, validation)
+    command = command ? command.reset() : Command(self, usage, validation, globalMiddleware)
     if (!completion) completion = Completion(self, usage, command)
 
     completionCommand = null
@@ -233,7 +238,7 @@ function Yargs (processArgs, cwd, parentRequire) {
 
   self.requiresArg = function (keys) {
     argsert('<array|string>', [keys], arguments.length)
-    populateParserHintArray('requiresArg', keys)
+    populateParserHintObject(self.nargs, false, 'narg', keys, 1)
     return self
   }
 
@@ -505,17 +510,17 @@ function Yargs (processArgs, cwd, parentRequire) {
     return self
   }
 
-  self.pkgConf = function pkgConf (key, path) {
-    argsert('<string> [string]', [key, path], arguments.length)
+  self.pkgConf = function pkgConf (key, rootPath) {
+    argsert('<string> [string]', [key, rootPath], arguments.length)
     let conf = null
     // prefer cwd to require-main-filename in this method
     // since we're looking for e.g. "nyc" config in nyc consumer
     // rather than "yargs" config in nyc (where nyc is the main filename)
-    const obj = pkgUp(path || cwd)
+    const obj = pkgUp(rootPath || cwd)
 
     // If an object exists in the key, add it to options.configObjects
     if (obj[key] && typeof obj[key] === 'object') {
-      conf = applyExtends(obj[key], path || cwd)
+      conf = applyExtends(obj[key], rootPath || cwd)
       options.configObjects = (options.configObjects || []).concat(conf)
     }
 
@@ -523,16 +528,24 @@ function Yargs (processArgs, cwd, parentRequire) {
   }
 
   const pkgs = {}
-  function pkgUp (path) {
-    const npath = path || '*'
+  function pkgUp (rootPath) {
+    const npath = rootPath || '*'
     if (pkgs[npath]) return pkgs[npath]
     const findUp = require('find-up')
 
     let obj = {}
     try {
+      let startDir = rootPath || require('require-main-filename')(parentRequire || require)
+
+      // When called in an environment that lacks require.main.filename, such as a jest test runner,
+      // startDir is already process.cwd(), and should not be shortened.
+      // Whether or not it is _actually_ a directory (e.g., extensionless bin) is irrelevant, find-up handles it.
+      if (!rootPath && path.extname(startDir)) {
+        startDir = path.dirname(startDir)
+      }
+
       const pkgJsonPath = findUp.sync('package.json', {
-        cwd: path || require('path').dirname(require('require-main-filename')(parentRequire || require)),
-        normalize: false
+        cwd: startDir
       })
       obj = JSON.parse(fs.readFileSync(pkgJsonPath))
     } catch (noop) {}
@@ -678,8 +691,9 @@ function Yargs (processArgs, cwd, parentRequire) {
       }
 
       const desc = opt.describe || opt.description || opt.desc
-      if (!opt.hidden) {
-        self.describe(key, desc)
+      self.describe(key, desc)
+      if (opt.hidden) {
+        self.hide(key)
       }
 
       if (opt.requiresArg) {
@@ -845,6 +859,28 @@ function Yargs (processArgs, cwd, parentRequire) {
     return self
   }
 
+  const defaultShowHiddenOpt = 'show-hidden'
+  options.showHiddenOpt = defaultShowHiddenOpt
+  self.addShowHiddenOpt = self.showHidden = function addShowHiddenOpt (opt, msg) {
+    argsert('[string|boolean] [string]', [opt, msg], arguments.length)
+
+    if (arguments.length === 1) {
+      if (opt === false) return self
+    }
+
+    const showHiddenOpt = typeof opt === 'string' ? opt : defaultShowHiddenOpt
+    self.boolean(showHiddenOpt)
+    self.describe(showHiddenOpt, msg || usage.deferY18nLookup('Show hidden options'))
+    options.showHiddenOpt = showHiddenOpt
+    return self
+  }
+
+  self.hide = function hide (key) {
+    argsert('<string|object>', [key], arguments.length)
+    options.hiddenOptions.push(key)
+    return self
+  }
+
   self.showHelpOnFail = function showHelpOnFail (enabled, message) {
     argsert('[boolean|string] [string]', [enabled, message], arguments.length)
     usage.showHelpOnFail(enabled, message)
@@ -993,6 +1029,7 @@ function Yargs (processArgs, cwd, parentRequire) {
 
     options.__ = y18n.__
     options.configuration = pkgUp()['yargs'] || {}
+
     const parsed = Parser.detailed(args, options)
     let argv = parsed.argv
     if (parseContext) argv = Object.assign({}, argv, parseContext)
@@ -1135,7 +1172,6 @@ function Yargs (processArgs, cwd, parentRequire) {
   self._runValidation = function runValidation (argv, aliases, positionalMap, parseErrors) {
     if (parseErrors) throw new YError(parseErrors.message)
     validation.nonOptionCount(argv)
-    validation.missingArgumentValue(argv)
     validation.requiredArguments(argv)
     if (strict) validation.unknownArguments(argv, aliases, positionalMap)
     validation.customChecks(argv, aliases)
