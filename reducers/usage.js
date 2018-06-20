@@ -15,10 +15,7 @@ const initialState = {
   failureOutput: false,
   epilog: undefined,
   usageDisabled: false,
-  usages: [],
-  examples: [],
-  commands: [],
-  frozen: {}
+  usages: []
 }
 
 function setShowHelpOnFail (state = initialState, enabled, message) {
@@ -47,11 +44,11 @@ function setUsageDisabled (state = initialState, value) {
 }
 
 function setUsages (state = initialState, value) {
-  return Object.assign({}, state, { usages: value.slice() })
+  return Object.assign({}, state, { usages: [...value] })
 }
 
-function addUsages (state = initialState, value) {
-  return Object.assign({}, state, { usages: [...state.usages, value.slice()] })
+function addUsages (state = initialState, msg, description) {
+  return Object.assign({}, state, { usages: [...state.usages, [msg, description]] })
 }
 
 function resetUsage (state = initialState) {
@@ -62,9 +59,7 @@ function resetUsage (state = initialState) {
     epilog: undefined,
     usageDisabled: false,
     usages: [],
-    examples: [],
-    commands: [],
-    frozen: {}
+    frozen: state.frozen
   }
 }
 
@@ -72,14 +67,19 @@ function freezeUsage (state = initialState) {
   return Object.assign({}, state, {
     frozen: {
       failMessage: state.failMessage,
+      showHelpOnFail: state.showHelpOnFail,
       failureOutput: state.failureOutput,
+      usages: state.usages.slice(),
+      usageDisabled: state.usageDisabled,
       epilog: state.epilog
     }
   })
 }
 
 function unfreezeUsage (state = initialState) {
-  return Object.assign({}, state, state.frozen)
+  const nextState = Object.assign({}, state, state.frozen)
+  delete nextState.frozen
+  return nextState
 }
 
 module.exports = function usageReducer (state = initialState, action = {}) {
@@ -95,7 +95,7 @@ module.exports = function usageReducer (state = initialState, action = {}) {
     case SET_USAGES:
       return setUsages(state, action.value)
     case ADD_USAGES:
-      return addUsages(state, action.value)
+      return addUsages(state, action.msg, action.description)
     case RESET_USAGE:
       return resetUsage(state)
     case FREEZE_USAGE:
