@@ -9,8 +9,10 @@ describe('usage reducer', () => {
     setShowHelpOnFail,
     setCommands,
     setExamples,
+    setDescriptions,
     addCommand,
     addExample,
+    addDescription,
     resetUsage,
     freezeUsage,
     unfreezeUsage
@@ -95,8 +97,19 @@ describe('usage reducer', () => {
   })
 
   it('should add two examples to examples array', () => {
-    const oneCommand = usageReducer(undefined, addExample('cmd', 'cmd example text'))
-    const twoCommands = usageReducer(oneCommand, addExample('another cmd', 'another cmd example text'))
-    expect(twoCommands.examples).to.deep.equal([['cmd', 'cmd example text'], ['another cmd', 'another cmd example text']])
+    const oneExample = usageReducer(undefined, addExample('cmd', 'cmd example text'))
+    const twoExamples = usageReducer(oneExample, addExample('another cmd', 'another cmd example text'))
+    expect(twoExamples.examples).to.deep.equal([['cmd', 'cmd example text'], ['another cmd', 'another cmd example text']])
+  })
+
+  it('should set descriptions', () => {
+    const result = usageReducer(undefined, setDescriptions({'key': 'key description'}))
+    expect(result.descriptions).to.deep.equal({'key': 'key description'})
+  })
+
+  it('should add two desriptions to descriptions object', () => {
+    const oneDescription = usageReducer(undefined, addDescription('key1', 'key1 description'))
+    const twoDescriptions = usageReducer(oneDescription, addDescription('key2', 'key2 description'))
+    expect(twoDescriptions.descriptions).to.deep.equal({'key1': 'key1 description', 'key2': 'key2 description'})
   })
 })
