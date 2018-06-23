@@ -6,7 +6,13 @@ const SET_FAILURE_OUTPUT = 'SET_FAILURE_OUTPUT'
 const SET_USAGE_EPILOG = 'SET_USAGE_EPILOG'
 const SET_USAGE_DISABLED = 'SET_USAGE_DISABLED'
 const SET_USAGES = 'SET_USAGES'
+const SET_COMMANDS = 'SET_COMMANDS'
+const SET_EXAMPLES = 'SET_EXAMPLES'
+const SET_DESCRIPTIONS = 'SET_DESCRIPTIONS'
 const ADD_USAGES = 'ADD_USAGES'
+const ADD_COMMAND = 'ADD_COMMAND'
+const ADD_EXAMPLE = 'ADD_EXAMPLE'
+const ADD_DESCRIPTION = 'ADD_DESCRIPTION'
 
 function setShowHelpOnFail (enabled, message) {
   return {
@@ -44,6 +50,27 @@ function setUsages (value) {
   }
 }
 
+function setCommands (value) {
+  return {
+    type: SET_COMMANDS,
+    value
+  }
+}
+
+function setExamples (value) {
+  return {
+    type: SET_EXAMPLES,
+    value
+  }
+}
+
+function setDescriptions (value) {
+  return {
+    type: SET_DESCRIPTIONS,
+    value
+  }
+}
+
 function addUsages (msg, description = '') {
   return {
     type: ADD_USAGES,
@@ -52,9 +79,36 @@ function addUsages (msg, description = '') {
   }
 }
 
-function resetUsage () {
+function addCommand (cmd, description = '', isDefault, aliases) {
   return {
-    type: RESET_USAGE
+    type: ADD_COMMAND,
+    cmd,
+    description,
+    isDefault,
+    aliases
+  }
+}
+
+function addExample (cmd, description = '') {
+  return {
+    type: ADD_EXAMPLE,
+    cmd,
+    description
+  }
+}
+
+function addDescription (key, description = '') {
+  return {
+    type: ADD_DESCRIPTION,
+    key,
+    description
+  }
+}
+
+function resetUsage (localLookup) {
+  return {
+    type: RESET_USAGE,
+    localLookup
   }
 }
 
@@ -76,7 +130,13 @@ module.exports = {
   setUsageEpilog,
   setUsageDisabled,
   setUsages,
+  setCommands,
+  setExamples,
+  setDescriptions,
   addUsages,
+  addCommand,
+  addExample,
+  addDescription,
   resetUsage,
   freezeUsage,
   unfreezeUsage,
@@ -85,7 +145,13 @@ module.exports = {
   SET_USAGE_EPILOG,
   SET_USAGE_DISABLED,
   SET_USAGES,
+  SET_COMMANDS,
+  SET_EXAMPLES,
+  SET_DESCRIPTIONS,
   ADD_USAGES,
+  ADD_COMMAND,
+  ADD_EXAMPLE,
+  ADD_DESCRIPTION,
   RESET_USAGE,
   FREEZE_USAGE,
   UNFREEZE_USAGE
