@@ -1,12 +1,14 @@
 {
   "name": "@aorinevo/yargs",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "yargs the modern, pirate-themed, successor to optimist.",
   "main": "./index.js",
   "files": [
     "index.js",
     "yargs.js",
     "lib",
+    "actions",
+    "reducers",
     "locales",
     "completion.sh.hbs",
     "LICENSE"
